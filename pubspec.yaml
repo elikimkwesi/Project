@@ -1,0 +1,115 @@
+name: harvestify
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.4 <4.0.0'
+
+dependencies:
+  animated_text_kit: ^4.2.2
+  another_carousel_pro: ^1.0.2
+  flutter:
+    sdk: flutter
+  geolocator: ^11.1.0
+  http: ^1.2.2
+  image_picker: ^1.1.2
+  image_picker_web: ^4.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/henry-perks-aOTBPSDjgj0-unsplash.jpg
+    - assets/create plant  innovation logo design.png
+    - assets/Maize seedling in cultivated agricultural field with graphic concepts modern agricultural technology, digital farm, smart farming innovation, IOT.jpeg
+    - assets/Potato-leaf-blight.webp
+    - assets/corn.jpg
+    - assets/corngray.jpeg
+    - assets/mosaic3.jpg
+    - assets/pepper1.jpg
+    - assets/16.jpg
+    - assets/plate.jpg
+    - assets/tomato1.png
+    - assets/tlb.jpg
+    - assets/latetomato.jpg
+    - assets/mold1.jpg
+    - assets/tomatospot2.jpeg
+    - assets/spider.jpg
+    - assets/target.jpg
+    - assets/curl.png
+    - assets/mosaic2.jpg
+    - assets/17.jpg
+    - assets/18.jpg
+    - assets/bell.png
+    - assets/black.jpg
+    - assets/black2.jpg
+    - assets/black3.jpg
+    - assets/bottle.png
+    - assets/burned.png
+    - assets/confusion.png
+    - assets/corn.jpg
+    - assets/corn2.jpg
+    - assets/esca3 copy.jpeg
+    - assets/corn3.png
+    - assets/corngray.jpeg
+    - assets/corngray2.png
+    - assets/corngray3.png
+    - assets/curl.png
+    - assets/curl2 copy.jpg
+    - assets/curl2.jpg
+    - assets/curl3.jpg
+    - assets/eaten.png
+    - assets/esca.jpg
+    - assets/esca2.jpg
+    - assets/esca3 copy.jpeg
+    - assets/esca3.jpeg
+    - assets/health.png
+    - assets/health2.jpg
+    - assets/health3.jpg
+    - assets/latetomato.jpg
+    - assets/latetomato2.jpeg
+    - assets/latetomato3.jpg
+    - assets/learnerWalkBackImg.png
+    - assets/mold1.jpg
+    - assets/mold2.jpeg
+    - assets/mold3.jpg
+    - assets/mosaic.jpg
+    - assets/mosaic2.jpg
+    - assets/mosaic3.jpg
+    - assets/ncorn.JPG
+    - assets/ncorn2.jpg
+    - assets/ncorn3.png
+    - assets/orange.jpg
+    - assets/oops.png
+    - assets/orange2.jpg
+    - assets/orange3.jpg
+    - assets/pepper2.png
+    - assets/pepper3.jpg
+    - assets/pepper1.jpg
+    - assets/plate3.jpeg
+    - assets/plate2.jpg
+    - assets/plate.jpg
+    - assets/Potato-leaf-blight.webp
+    - assets/Potato-leaf-blight.jpg
+    - assets/Potato-leaf-blight - Copy.jpg
+    - assets/scab3.jpg
+    - assets/scab2.jpg
+    - assets/scab.jpg
+    - assets/tomatospot3.jpg
+    - assets/tomatospot2.jpeg
+    - assets/tomatospot1.jpg
+    - assets/tomato3.jpg
+    - assets/tomato2.jpg
+    - assets/tomato1.png
+    - assets/tlb3.jpg
+    - assets/tlb2.jpg
+    - assets/tlb.jpg
+    - assets/target3.png
+    - assets/target2.jpg
+    - assets/target.jpg
