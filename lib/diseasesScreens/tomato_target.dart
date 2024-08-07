@@ -3,7 +3,7 @@ import 'package:another_carousel_pro/another_carousel_pro.dart';
 import '/screens/classified_diseases_screen.dart';  // Import the ClassifiedDiseases screen
 
 class TomatoTarget extends StatefulWidget {
-  TomatoTarget({Key? key, required this.title}) : super(key: key);
+  const TomatoTarget({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -15,15 +15,15 @@ class TomatoTargetState extends State<TomatoTarget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ClassifiedDiseases()),
+              MaterialPageRoute(builder: (context) => const ClassifiedDiseases()),
             );
           },
         ),
@@ -40,7 +40,7 @@ class TomatoTargetState extends State<TomatoTarget> {
                     Hero(
                       tag: "Tomato Target Spot",
                       child: AnotherCarousel(
-                        images: [
+                        images: const [
                           AssetImage('assets/target2.jpg'),
                           AssetImage('assets/target3.png'),
                           AssetImage('assets/target.jpg'),
@@ -60,7 +60,7 @@ class TomatoTargetState extends State<TomatoTarget> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 270, left: 20, right: 20),
+                padding: const EdgeInsets.only(top: 270, left: 20, right: 20),
                 child: Container(
                   height: 100.0,
                   width: MediaQuery.of(context).size.width - 24.0,
@@ -75,7 +75,7 @@ class TomatoTargetState extends State<TomatoTarget> {
                       ),
                     ],
                   ),
-                  child: Padding(
+                  child: const Padding(
                     padding: EdgeInsets.only(left: 20),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -102,7 +102,7 @@ class TomatoTargetState extends State<TomatoTarget> {
               ),
             ],
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.all(14.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,15 +139,15 @@ class TomatoTargetState extends State<TomatoTarget> {
 class SectionTitle extends StatelessWidget {
   final String title;
 
-  SectionTitle({required this.title});
+  const SectionTitle({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 40, bottom: 20),
+      padding: const EdgeInsets.only(top: 40, bottom: 20),
       child: Text(
         title,
-        style: TextStyle(fontSize: 20, fontFamily: 'ConcertOne-Regular'),
+        style: const TextStyle(fontSize: 20, fontFamily: 'ConcertOne-Regular'),
       ),
     );
   }
@@ -156,15 +156,15 @@ class SectionTitle extends StatelessWidget {
 class SectionContent extends StatelessWidget {
   final String content;
 
-  SectionContent({required this.content});
+  const SectionContent({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 20, bottom: 20),
+      padding: const EdgeInsets.only(top: 20, bottom: 20),
       child: Text(
         content,
-        style: TextStyle(fontSize: 17, fontFamily: 'Raleway'),
+        style: const TextStyle(fontSize: 17, fontFamily: 'Raleway'),
         textAlign: TextAlign.justify,
       ),
     );

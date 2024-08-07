@@ -4,6 +4,8 @@ import 'forgot_password_screen.dart'; // Ensure this import exists
 import 'signup_screen.dart'; // Ensure this import exists
 
 class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +49,7 @@ class LoginScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                    MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
                   );
                 },
                 child: const Text('Forgot password?', style: TextStyle(color: Colors.white)),
@@ -58,10 +60,9 @@ class LoginScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeScreen(username: '',)),
+                  MaterialPageRoute(builder: (context) => const HomeScreen(username: '',)),
                 );
               },
-              child: const Text('Log in'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white, // Changed to match the design
                 foregroundColor: Colors.green, // Changed to match the design
@@ -70,13 +71,14 @@ class LoginScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
+              child: const Text('Log in'),
             ),
             const SizedBox(height: 20),
             GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignupScreen()),
+                  MaterialPageRoute(builder: (context) => const SignupScreen()),
                 );
               },
               child: const Text(

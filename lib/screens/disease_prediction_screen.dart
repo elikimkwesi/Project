@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 class DiseasePredictionScreen extends StatefulWidget {
+  const DiseasePredictionScreen({super.key});
+
   @override
   _DiseasePredictionScreenState createState() => _DiseasePredictionScreenState();
 }
@@ -54,26 +56,26 @@ class _DiseasePredictionScreenState extends State<DiseasePredictionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Disease Prediction'),
+        title: const Text('Disease Prediction'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             _image == null
-                ? Text('No image selected.')
+                ? const Text('No image selected.')
                 : Image.file(_image!),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _pickImage,
-              child: Text('Pick Image'),
+              child: const Text('Pick Image'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _predictDisease,
-              child: Text('Predict Disease'),
+              child: const Text('Predict Disease'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               'Predicted Class: $_predictedClass',
             ),
@@ -87,6 +89,6 @@ class _DiseasePredictionScreenState extends State<DiseasePredictionScreen> {
   }
 }
 
-void main() => runApp(MaterialApp(
+void main() => runApp(const MaterialApp(
   home: DiseasePredictionScreen(),
 ));

@@ -11,10 +11,12 @@ import 'screens/settings_screen.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,16 +26,16 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => SplashScreen(),
-        '/Walkthrough': (context) => WalkthroughScreen(),
-        '/login': (context) => LoginScreen(),
-        '/forgot_password': (context) => ForgotPasswordScreen(),
-        '/signup': (context) => SignupScreen(),
-        '/verify_phone': (context) => VerifyPhoneScreen(),
-        '/home': (context) => HomeScreen(username: ''),
-        '/dashboard': (context) => DashboardScreen(),
-        '/profile': (context) => ProfileScreen(),
-        '/settings': (context) => SettingsScreen(),
+        '/': (context) => const SplashScreen(),
+        '/Walkthrough': (context) => const WalkthroughScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/forgot_password': (context) => const ForgotPasswordScreen(),
+        '/signup': (context) => const SignupScreen(),
+        '/verify_phone': (context) => const VerifyPhoneScreen(),
+        '/home': (context) => const HomeScreen(username: ''),
+        '/dashboard': (context) => const DashboardScreen(),
+        '/profile': (context) => const ProfileScreen(),
+        '/settings': (context) => const SettingsScreen(),
       },
     );
   }

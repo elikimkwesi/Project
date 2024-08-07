@@ -3,6 +3,8 @@ import '/models/diseaseModel.dart';
 import '/dataGenerator.dart';
 
 class ClassifiedDiseases extends StatefulWidget {
+  const ClassifiedDiseases({super.key});
+
   @override
   _ClassifiedDiseasesState createState() => _ClassifiedDiseasesState();
 }
@@ -28,9 +30,9 @@ class _ClassifiedDiseasesState extends State<ClassifiedDiseases> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Classified Diseases'),
+        title: const Text('Classified Diseases'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
             Scaffold.of(context).openDrawer();
@@ -45,7 +47,7 @@ class _ClassifiedDiseasesState extends State<ClassifiedDiseases> {
               onChanged: filterDiseases,
               decoration: InputDecoration(
                 hintText: 'Search',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
               ),
             ),
@@ -59,7 +61,7 @@ class _ClassifiedDiseasesState extends State<ClassifiedDiseases> {
                   leading: Image.asset(disease.imagePath, fit: BoxFit.cover, width: 60.0, height: 60.0),
                   title: Text(disease.name),
                   subtitle: Text(disease.readTime),
-                  trailing: Text('Read', style: TextStyle(color: Colors.blue)),
+                  trailing: const Text('Read', style: TextStyle(color: Colors.blue)),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => disease.detailPage),

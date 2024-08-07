@@ -3,7 +3,7 @@ import 'package:another_carousel_pro/another_carousel_pro.dart';
 import '/screens/classified_diseases_screen.dart';  // Import the ClassifiedDiseases screen
 
 class TomatoYellow extends StatefulWidget {
-  TomatoYellow({Key? key, required this.title}) : super(key: key);
+  const TomatoYellow({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -15,15 +15,15 @@ class TomatoYellowState extends State<TomatoYellow> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ClassifiedDiseases()),
+              MaterialPageRoute(builder: (context) => const ClassifiedDiseases()),
             );
           },
         ),
@@ -40,7 +40,7 @@ class TomatoYellowState extends State<TomatoYellow> {
                     Hero(
                       tag: "Tomato Yellow Leaf Curl Virus",
                       child: AnotherCarousel(
-                        images: [
+                        images: const [
                           AssetImage('assets/curl.png'),
                           AssetImage('assets/curl2.jpg'),
                           AssetImage('assets/curl3.jpg'),
@@ -60,7 +60,7 @@ class TomatoYellowState extends State<TomatoYellow> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 270, left: 20, right: 20),
+                padding: const EdgeInsets.only(top: 270, left: 20, right: 20),
                 child: Container(
                   height: 100.0,
                   width: MediaQuery.of(context).size.width - 24.0,
@@ -75,7 +75,7 @@ class TomatoYellowState extends State<TomatoYellow> {
                       ),
                     ],
                   ),
-                  child: Padding(
+                  child: const Padding(
                     padding: EdgeInsets.only(left: 20),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -102,7 +102,7 @@ class TomatoYellowState extends State<TomatoYellow> {
               ),
             ],
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.all(14.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,15 +139,15 @@ class TomatoYellowState extends State<TomatoYellow> {
 class SectionTitle extends StatelessWidget {
   final String title;
 
-  SectionTitle({required this.title});
+  const SectionTitle({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 40, bottom: 20),
+      padding: const EdgeInsets.only(top: 40, bottom: 20),
       child: Text(
         title,
-        style: TextStyle(fontSize: 20, fontFamily: 'ConcertOne-Regular'),
+        style: const TextStyle(fontSize: 20, fontFamily: 'ConcertOne-Regular'),
       ),
     );
   }
@@ -156,15 +156,15 @@ class SectionTitle extends StatelessWidget {
 class SectionContent extends StatelessWidget {
   final String content;
 
-  SectionContent({required this.content});
+  const SectionContent({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 20, bottom: 20),
+      padding: const EdgeInsets.only(top: 20, bottom: 20),
       child: Text(
         content,
-        style: TextStyle(fontSize: 17, fontFamily: 'Raleway'),
+        style: const TextStyle(fontSize: 17, fontFamily: 'Raleway'),
         textAlign: TextAlign.justify,
       ),
     );

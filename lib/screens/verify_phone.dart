@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class VerifyPhoneScreen extends StatelessWidget {
+  const VerifyPhoneScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

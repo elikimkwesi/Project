@@ -8,7 +8,7 @@ import '../widgets/drawer_widget.dart';
 class HomeScreen extends StatefulWidget {
   final String username;
 
-  HomeScreen({required this.username});
+  const HomeScreen({super.key, required this.username});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -135,17 +135,17 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Location'),
+          title: const Text('Select Location'),
           content: TextField(
             controller: locationController,
-            decoration: InputDecoration(hintText: 'Enter city name'),
+            decoration: const InputDecoration(hintText: 'Enter city name'),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(locationController.text);
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -197,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
     print("Building HomeScreen widget");
     return Scaffold(
       key: _scaffoldKey,
-      drawer: CustomDrawer(),
+      drawer: const CustomDrawer(),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -208,15 +208,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 30,
                       backgroundImage: AssetImage('assets/images/placeholder_profile.png'), // Placeholder image
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Text(
                         widget.username,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
@@ -224,13 +224,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.notifications, color: Colors.black),
+                      icon: const Icon(Icons.notifications, color: Colors.black),
                       onPressed: () {
                         // Handle notifications tap
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.grid_view, color: Colors.black),
+                      icon: const Icon(Icons.grid_view, color: Colors.black),
                       onPressed: () {
                         _scaffoldKey.currentState?.openDrawer();
                       },
@@ -256,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Your Weather',
                               style: TextStyle(
                                 fontSize: 20,
@@ -264,9 +264,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Colors.red,
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             selectedCity.isEmpty
-                                ? Text(
+                                ? const Text(
                                     'Tap to select location',
                                     style: TextStyle(
                                       fontSize: 18,
@@ -278,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     children: [
                                       Text(
                                         temperature,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 50,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.green,
@@ -286,22 +286,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                       Text(
                                         highLowTemp,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.green,
                                         ),
                                       ),
-                                      SizedBox(height: 10),
+                                      const SizedBox(height: 10),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: forecast.map((f) {
                                           return Column(
                                             children: [
-                                              Icon(Icons.cloud, color: Colors.lightBlue), // Replace with actual weather icon
+                                              const Icon(Icons.cloud, color: Colors.lightBlue), // Replace with actual weather icon
                                               Text(
                                                 '${DateTime.fromMillisecondsSinceEpoch(f['dt'] * 1000).hour}:00',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.green,
@@ -309,7 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                               Text(
                                                 '${f['main']['temp']}°',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.green,
@@ -319,12 +319,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                           );
                                         }).toList(),
                                       ),
-                                      SizedBox(height: 10),
-                                      Divider(color: Colors.black),
+                                      const SizedBox(height: 10),
+                                      const Divider(color: Colors.black),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
+                                          const Text(
                                             'Air Quality Index:',
                                             style: TextStyle(
                                               fontSize: 18,
@@ -334,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           Text(
                                             airQuality,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.green,
@@ -345,7 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
+                                          const Text(
                                             'Humidity:',
                                             style: TextStyle(
                                               fontSize: 18,
@@ -355,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           Text(
                                             humidity,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.green,
@@ -363,8 +363,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         ],
                                       ),
-                                      SizedBox(height: 10),
-                                      Divider(color: Colors.black),
+                                      const SizedBox(height: 10),
+                                      const Divider(color: Colors.black),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: forecast.map((f) {
@@ -372,16 +372,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                             children: [
                                               Text(
                                                 getDay(DateTime.fromMillisecondsSinceEpoch(f['dt'] * 1000)),
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black,
                                                 ),
                                               ),
-                                              Icon(Icons.cloud, color: Colors.lightBlue), // Replace with actual weather icon
+                                              const Icon(Icons.cloud, color: Colors.lightBlue), // Replace with actual weather icon
                                               Text(
                                                 '${f['main']['temp_max']}°',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.green,
@@ -389,7 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                               Text(
                                                 '${f['main']['temp_min']}°',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.green,
@@ -405,15 +405,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: _getCurrentLocation,
-                      child: Text("Use Current Location"),
+                      child: const Text("Use Current Location"),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // What would you like to do section
               Padding(
@@ -425,11 +425,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: _buildFeatureCard(Icons.healing, 'Predict Diseases', Colors.red, () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => DiseasePredictionScreen()),
+                          MaterialPageRoute(builder: (context) => const DiseasePredictionScreen()),
                         );
                       }),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: _buildFeatureCard(Icons.eco, 'Monitor Farm', Colors.green, () {
                         // Handle Monitor Farm tap
@@ -438,7 +438,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Agricultural news section
               Padding(
@@ -446,7 +446,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       'Science News',
                       style: TextStyle(
                         fontSize: 20,
@@ -458,7 +458,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         // Handle view all tap
                       },
-                      child: Text(
+                      child: const Text(
                         'View All',
                         style: TextStyle(
                           fontSize: 16,
@@ -469,7 +469,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
@@ -495,33 +495,33 @@ class _HomeScreenState extends State<HomeScreen> {
                                     width: 100,
                                     height: 100,
                                     color: Colors.grey,
-                                    child: Icon(Icons.image, color: Colors.white),
+                                    child: const Icon(Icons.image, color: Colors.white),
                                   ),
-                            SizedBox(width: 16),
+                            const SizedBox(width: 16),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     article['title'],
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black,
                                     ),
                                   ),
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   Text(
                                     'by ${article['author'] ?? 'Unknown'}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 14,
                                       color: Colors.black54,
                                     ),
                                   ),
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   Text(
                                     '${(article['content'] != null ? (article['content'] as String).split(' ').length ~/ 200 : 1)} min read',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 14,
                                       color: Colors.black54,
                                     ),
@@ -556,7 +556,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -564,10 +564,10 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 50, color: color),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,

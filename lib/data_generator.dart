@@ -24,7 +24,7 @@ class DataGenerator {
         name: 'Corn Common Rust',
         imagePath: 'assets/corn.jpg',
         readTime: '5 mins read',
-        detailPage: CornCommonRust(
+        detailPage: const CornCommonRust(
           title: '',
         ),
       ),
@@ -32,7 +32,7 @@ class DataGenerator {
         name: 'Corn Gray Leaf',
         imagePath: 'assets/corngray.jpeg',
         readTime: '5 mins read',
-        detailPage: CornGrayLeaf(
+        detailPage: const CornGrayLeaf(
           title: '',
         ),
       ),
@@ -40,7 +40,7 @@ class DataGenerator {
         name: 'Northern Corn Leaf Blight',
         imagePath: 'assets/ncorn.JPG',
         readTime: '5 mins read',
-        detailPage: NorthernCornLeafBlight(
+        detailPage: const NorthernCornLeafBlight(
           title: '',
         ),
       ),
@@ -48,7 +48,7 @@ class DataGenerator {
         name: 'Orange Citrus Greening',
         imagePath: 'assets/orange.jpg',
         readTime: '5 mins read',
-        detailPage: OrangeCitrus(
+        detailPage: const OrangeCitrus(
           title: '',
         ),
       ),
@@ -56,7 +56,7 @@ class DataGenerator {
         name: 'Pepper Bacterial Spot',
         imagePath: 'assets/pepper1.jpg',
         readTime: '5 mins read',
-        detailPage: PepperBacterialSpot(
+        detailPage: const PepperBacterialSpot(
           title: '',
         ),
       ),
@@ -64,7 +64,7 @@ class DataGenerator {
         name: 'Potato Early Blight',
         imagePath: 'assets/16.jpg',
         readTime: '5 mins read',
-        detailPage: PotatoEarlyBlight(
+        detailPage: const PotatoEarlyBlight(
           title: '',
         ),
       ),
@@ -72,7 +72,7 @@ class DataGenerator {
         name: 'Potato Late Blight',
         imagePath: 'assets/plate.jpg',
         readTime: '5 mins read',
-        detailPage: PotatoLateBlight(
+        detailPage: const PotatoLateBlight(
           title: '',
         ),
       ),
@@ -120,7 +120,7 @@ class DataGenerator {
         name: 'Tomato Spider Mites',
         imagePath: 'assets/spider.jpg',
         readTime: '5 mins read',
-        detailPage: TomatoSpider(
+        detailPage: const TomatoSpider(
           title: '',
         ),
       ),
@@ -128,7 +128,7 @@ class DataGenerator {
         name: 'Tomato Target spot',
         imagePath: 'assets/target2.jpg',
         readTime: '5 mins read',
-        detailPage: TomatoTarget(
+        detailPage: const TomatoTarget(
           title: '',
         ),
       ),
@@ -136,7 +136,7 @@ class DataGenerator {
         name: 'Tomato Yellow Leaf Curl Virus',
         imagePath: 'assets/curl.png',
         readTime: '5 mins read',
-        detailPage: TomatoYellow(
+        detailPage: const TomatoYellow(
           title: '',
         ),
       ),
@@ -144,7 +144,7 @@ class DataGenerator {
         name: 'Tomato Mosaic Virus ',
         imagePath: 'assets/mosaic2.jpg',
         readTime: '5 mins read',
-        detailPage: TomatoMosaic(
+        detailPage: const TomatoMosaic(
           title: '',
         ),
       ),
