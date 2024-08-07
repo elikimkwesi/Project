@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import '/utils/api_service.dart';
 
 class VerifyPhoneScreen extends StatelessWidget {
-  const VerifyPhoneScreen({super.key});
+  final String userId;
+  final TextEditingController otpController = TextEditingController();
+  final ApiService apiService = ApiService();
+
+  VerifyPhoneScreen({required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +33,7 @@ class VerifyPhoneScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             TextField(
+              controller: otpController,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
@@ -37,11 +43,29 @@ class VerifyPhoneScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                // Add verification functionality here
+              onPressed: () async {
+                String otp = otpController.text;
+                try {
+                  var response = await apiService.verifyOTP(userId, otp);
+                  if (response['status'] == 'VERIFIED') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(response['message'])),
+                    );
+                    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(response['message'])),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Verification failed: $e')),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.green, backgroundColor: Colors.white,
+                foregroundColor: Colors.green,
+                backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -52,7 +76,7 @@ class VerifyPhoneScreen extends StatelessWidget {
             const SizedBox(height: 20),
             GestureDetector(
               onTap: () {
-                // Resend code functionality
+                // Add resend code functionality if needed
               },
               child: const Text(
                 'Send a new code',

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import '/utils/api_service.dart';
+import '/screens/verify_phone.dart';
 
 class SignupScreen extends StatelessWidget {
-  const SignupScreen({super.key});
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final ApiService apiService = ApiService();
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +27,7 @@ class SignupScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'User name',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
+              controller: emailController,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
@@ -40,6 +37,7 @@ class SignupScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             TextField(
+              controller: phoneController,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
@@ -49,6 +47,7 @@ class SignupScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 filled: true,
@@ -59,11 +58,31 @@ class SignupScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/verify_phone');
+              onPressed: () async {
+                String email = emailController.text;
+                String phone = phoneController.text;
+                String password = passwordController.text;
+                try {
+                  var response = await apiService.signup(email, phone, password);
+                  if (response['status'] == 'PENDING') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => VerifyPhoneScreen(userId: response['data']['userId'])),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(response['message'])),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Signup failed: $e')),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.green, backgroundColor: Colors.white,
+                foregroundColor: Colors.green,
+                backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
@@ -76,4 +95,3 @@ class SignupScreen extends StatelessWidget {
     );
   }
 }
-   

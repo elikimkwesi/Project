@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
-import 'forgot_password_screen.dart'; // Ensure this import exists
-import 'signup_screen.dart'; // Ensure this import exists
+import 'forgot_password_screen.dart';
+import 'signup_screen.dart';
+import '/utils/api_service.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final ApiService apiService = ApiService();
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +29,7 @@ class LoginScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             TextField(
+              controller: emailController,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
@@ -35,6 +39,7 @@ class LoginScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 filled: true,
@@ -49,7 +54,7 @@ class LoginScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+                    MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
                   );
                 },
                 child: const Text('Forgot password?', style: TextStyle(color: Colors.white)),
@@ -57,28 +62,43 @@ class LoginScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen(username: '',)),
-                );
+              onPressed: () async {
+                String email = emailController.text;
+                String password = passwordController.text;
+                try {
+                  var response = await apiService.login(email, password);
+                  if (response['status'] == 'SUCCESS') {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen(username: email)),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(response['message'])),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Login failed: $e')),
+                  );
+                }
               },
+              child: const Text('Log in'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white, // Changed to match the design
-                foregroundColor: Colors.green, // Changed to match the design
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.green,
                 padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
-              child: const Text('Log in'),
             ),
             const SizedBox(height: 20),
             GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SignupScreen()),
+                  MaterialPageRoute(builder: (context) => SignupScreen()),
                 );
               },
               child: const Text(
