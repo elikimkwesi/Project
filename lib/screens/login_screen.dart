@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/loading_dialog.dart';
 import 'home_screen.dart';
 import 'forgot_password_screen.dart';
 import 'signup_screen.dart';
@@ -65,12 +66,14 @@ class LoginScreen extends StatelessWidget {
               onPressed: () async {
                 String email = emailController.text;
                 String password = passwordController.text;
+                showLoadingDialog(context); // Show loading dialog
                 try {
                   var response = await apiService.login(email, password);
+                  hideLoadingDialog(context); // Hide loading dialog
                   if (response['status'] == 'SUCCESS') {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen(username: email)),
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -78,6 +81,7 @@ class LoginScreen extends StatelessWidget {
                     );
                   }
                 } catch (e) {
+                  hideLoadingDialog(context); // Hide loading dialog on error
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Login failed: $e')),
                   );

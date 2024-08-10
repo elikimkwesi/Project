@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:harvestify/screens/disease_prediction_screen.dart';
+import 'package:harvestify/widgets/newsDetail.dart';
+import 'package:harvestify/widgets/newsList.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:geolocator/geolocator.dart';
+import '../utils/profile.dart';
 import '../widgets/drawer_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String username;
-
-  const HomeScreen({super.key, required this.username});
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -37,41 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
     const apiKey = 'd14288d4a4221432633a42c6379c5a63';
     final url = 'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$apiKey&units=metric';
     final forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=$city&appid=$apiKey&units=metric';
-
-    try {
-      final weatherResponse = await http.get(Uri.parse(url));
-      final forecastResponse = await http.get(Uri.parse(forecastUrl));
-
-      if (weatherResponse.statusCode == 200 && forecastResponse.statusCode == 200) {
-        final weatherData = jsonDecode(weatherResponse.body);
-        final forecastData = jsonDecode(forecastResponse.body);
-        setState(() {
-          weatherDescription = weatherData['weather'][0]['description'];
-          temperature = '${weatherData['main']['temp']}°';
-          highLowTemp = 'H: ${weatherData['main']['temp_max']}° L: ${weatherData['main']['temp_min']}°';
-          airQuality = 'Good'; // Placeholder, replace with actual data if available
-          humidity = '${weatherData['main']['humidity']}%';
-          forecast = forecastData['list'].take(4).toList();
-        });
-        print("Weather data fetched successfully");
-      } else {
-        setState(() {
-          weatherDescription = 'Failed to fetch weather';
-        });
-        print("Failed to fetch weather");
-      }
-    } catch (e) {
-      setState(() {
-        weatherDescription = 'Failed to fetch weather: $e';
-      });
-      print("Error fetching weather: $e");
-    }
-  }
-
-  Future<void> fetchWeatherByCoordinates(Position position) async {
-    const apiKey = 'd14288d4a4221432633a42c6379c5a63';
-    final url = 'https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=$apiKey&units=metric';
-    final forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=${position.latitude}&lon=${position.longitude}&appid=$apiKey&units=metric';
 
     try {
       final weatherResponse = await http.get(Uri.parse(url));
@@ -160,38 +125,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      print('Location services are disabled.');
-      return;
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        print('Location permissions are denied');
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      print('Location permissions are permanently denied, we cannot request permissions.');
-      return;
-    }
-
-    try {
-      final position = await Geolocator.getCurrentPosition();
-      fetchWeatherByCoordinates(position);
-    } catch (e) {
-      print('Error getting location: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     print("Building HomeScreen widget");
@@ -205,17 +138,25 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               // Profile and notification section
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.only(top: 32.0, left: 16.0, right: 16.0, bottom: 16.0),
                 child: Row(
                   children: [
-                    const CircleAvatar(
-                      radius: 30,
-                      backgroundImage: AssetImage('assets/images/placeholder_profile.png'), // Placeholder image
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ProfileScreen(username: '', surname: '', otherNames: '', primaryContact: '',)),
+                        );
+                      },
+                      child: const CircleAvatar(
+                        radius: 30,
+                        backgroundImage: AssetImage('assets/images/placeholder_profile.png'), // Placeholder image
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Text(
-                        widget.username,
+                        'Welcome',
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -261,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.red,
+                                color: Colors.brown, // Changed to brown for a natural look
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -281,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         style: const TextStyle(
                                           fontSize: 50,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.green,
+                                          color: Color.fromARGB(255, 6, 80, 8), // Darker green for better contrast
                                         ),
                                       ),
                                       Text(
@@ -289,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.green,
+                                          color: Color.fromARGB(255, 6, 80, 8), // Matching high/low temp color
                                         ),
                                       ),
                                       const SizedBox(height: 10),
@@ -304,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.green,
+                                                  color: Color.fromARGB(255, 6, 80, 8),
                                                 ),
                                               ),
                                               Text(
@@ -312,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.green,
+                                                  color: Color.fromARGB(255, 6, 80, 8),
                                                 ),
                                               ),
                                             ],
@@ -337,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.green,
+                                              color: Color.fromARGB(255, 6, 80, 8),
                                             ),
                                           ),
                                         ],
@@ -358,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.green,
+                                              color: Color.fromARGB(255, 6, 80, 8),
                                             ),
                                           ),
                                         ],
@@ -384,7 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.green,
+                                                  color: Color.fromARGB(255, 6, 80, 8),
                                                 ),
                                               ),
                                               Text(
@@ -392,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.green,
+                                                  color: Color.fromARGB(255, 6, 80, 8),
                                                 ),
                                               ),
                                             ],
@@ -406,10 +347,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: _getCurrentLocation,
-                      child: const Text("Use Current Location"),
-                    ),
                   ],
                 ),
               ),
@@ -456,7 +393,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Handle view all tap
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => NewsListScreen(news: news)),
+                        );
                       },
                       child: const Text(
                         'View All',
@@ -474,62 +414,70 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   children: news.map((article) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        child: Row(
-                          children: [
-                            article['urlToImage'] != null
-                                ? Image.network(
-                                    article['urlToImage'],
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Container(
-                                    width: 100,
-                                    height: 100,
-                                    color: Colors.grey,
-                                    child: const Icon(Icons.image, color: Colors.white),
-                                  ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    article['title'],
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => NewsDetailScreen(article: article)),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: Container(
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          child: Row(
+                            children: [
+                              article['urlToImage'] != null
+                                  ? Image.network(
+                                      article['urlToImage'],
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Container(
+                                      width: 100,
+                                      height: 100,
+                                      color: Colors.grey,
+                                      child: const Icon(Icons.image, color: Colors.white),
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'by ${article['author'] ?? 'Unknown'}',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black54,
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      article['title'],
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    '${(article['content'] != null ? (article['content'] as String).split(' ').length ~/ 200 : 1)} min read',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black54,
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'by ${article['author'] ?? 'Unknown'}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      '${(article['content'] != null ? (article['content'] as String).split(' ').length ~/ 200 : 1)} min read',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );

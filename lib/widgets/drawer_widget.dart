@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:harvestify/utils/profile.dart';
 import '/screens/classified_diseases_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -10,13 +11,22 @@ class CustomDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const UserAccountsDrawerHeader(
-            accountName: Text("Mohit Singh"),
-            accountEmail: Text("mohitrajputms123@gmail.com"),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage("assets/images/placeholder_profile.png"),
+          UserAccountsDrawerHeader(
+            accountName: const Text("Mohit Singh"),
+            accountEmail: const Text("mohitrajputms123@gmail.com"),
+            currentAccountPicture: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen(username: '', surname: '', otherNames: '', primaryContact: 's',)),
+                );
+              },
+              child: const CircleAvatar(
+                backgroundImage: AssetImage("assets/images/placeholder_profile.png"),
+              ),
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color.fromARGB(255, 6, 80, 8),
             ),
           ),

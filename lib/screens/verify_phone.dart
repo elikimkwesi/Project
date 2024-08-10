@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/loading_dialog.dart';
 import '/utils/api_service.dart';
 
 class VerifyPhoneScreen extends StatelessWidget {
@@ -45,8 +46,10 @@ class VerifyPhoneScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 String otp = otpController.text;
+                showLoadingDialog(context); // Show loading dialog
                 try {
                   var response = await apiService.verifyOTP(userId, otp);
+                  hideLoadingDialog(context); // Hide loading dialog
                   if (response['status'] == 'VERIFIED') {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(response['message'])),
@@ -58,6 +61,7 @@ class VerifyPhoneScreen extends StatelessWidget {
                     );
                   }
                 } catch (e) {
+                  hideLoadingDialog(context); // Hide loading dialog on error
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Verification failed: $e')),
                   );

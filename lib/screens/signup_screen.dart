@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/loading_dialog.dart';
 import '/utils/api_service.dart';
 import '/screens/verify_phone.dart';
 
@@ -62,8 +63,10 @@ class SignupScreen extends StatelessWidget {
                 String email = emailController.text;
                 String phone = phoneController.text;
                 String password = passwordController.text;
+                showLoadingDialog(context); // Show loading dialog
                 try {
                   var response = await apiService.signup(email, phone, password);
+                  hideLoadingDialog(context); // Hide loading dialog
                   if (response['status'] == 'PENDING') {
                     Navigator.push(
                       context,
@@ -75,6 +78,7 @@ class SignupScreen extends StatelessWidget {
                     );
                   }
                 } catch (e) {
+                  hideLoadingDialog(context); // Hide loading dialog on error
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Signup failed: $e')),
                   );
