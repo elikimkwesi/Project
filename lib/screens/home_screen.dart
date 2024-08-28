@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:harvestify/screens/disease_prediction_screen.dart';
+import 'package:harvestify/screens/fetchdata.dart';
+import 'package:harvestify/widgets/avatarWidget.dart';
 import 'package:harvestify/widgets/newsDetail.dart';
 import 'package:harvestify/widgets/newsList.dart';
 import 'package:http/http.dart' as http;
@@ -145,13 +147,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ProfileScreen(username: '', surname: '', otherNames: '', primaryContact: '',)),
+                          MaterialPageRoute(builder: (context) => ProfileScreen(username: '', surname: '', otherNames: '', primaryContact: '', secondaryContact: '',)),
                         );
                       },
-                      child: const CircleAvatar(
-                        radius: 30,
-                        backgroundImage: AssetImage('assets/images/placeholder_profile.png'), // Placeholder image
-                      ),
+                      child:  AvatarWidget(),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -362,14 +361,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: _buildFeatureCard(Icons.healing, 'Predict Diseases', Colors.red, () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const DiseasePredictionScreen()),
+                          MaterialPageRoute(builder: (context) => PredictionPage()),
                         );
                       }),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: _buildFeatureCard(Icons.eco, 'Monitor Farm', Colors.green, () {
-                        // Handle Monitor Farm tap
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SensorDataPage(soilMoistureData: [], waterLevelData: [], temperatureData: [], humidityData: [],)),
+                        );// Handle Monitor Farm tap
                       }),
                     ),
                   ],

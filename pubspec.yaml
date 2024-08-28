@@ -9,12 +9,20 @@ environment:
 dependencies:
   animated_text_kit: ^4.2.2
   another_carousel_pro: ^1.0.2
+  collection: ^1.18.0
+  fl_chart: ^0.68.0
   flutter:
     sdk: flutter
-  geolocator: ^11.1.0
+  geolocator: ^13.0.1
   http: ^1.2.2
+  image: ^4.2.0
+  image_cropper: ^8.0.2
   image_picker: ^1.1.2
   image_picker_web: ^4.0.0
+  logger: ^2.4.0
+  path_provider: ^2.1.4
+  shared_preferences: ^2.3.1
+  tflite: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -113,3 +121,4 @@ flutter:
     - assets/target3.png
     - assets/target2.jpg
     - assets/target.jpg
+    - assets/images (1).jpg

@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-// ignore: must_be_immutable
 class ProfileScreen extends StatefulWidget {
-  String username;
-  String surname;
-  String otherNames;
-  String primaryContact;
-  String secondaryContact;
-
   ProfileScreen({
     Key? key,
-    required this.username,
-    required this.surname,
-    required this.otherNames,
-    required this.primaryContact,
-    this.secondaryContact = '',
+    required String username,
+    required String surname,
+    required String otherNames,
+    required String primaryContact,
+    required String secondaryContact,
   }) : super(key: key);
 
   @override
@@ -28,14 +26,19 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
   late TextEditingController _secondaryContactController;
   bool _isEditingPersonal = false;
   bool _isEditingContact = false;
+  File? _avatarImage;
+  String _username = '';
+  String _primaryContact = '';
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _surnameController = TextEditingController(text: widget.surname);
-    _otherNamesController = TextEditingController(text: widget.otherNames);
-    _secondaryContactController = TextEditingController(text: widget.secondaryContact);
+    _surnameController = TextEditingController();
+    _otherNamesController = TextEditingController();
+    _secondaryContactController = TextEditingController();
+    _loadProfileData();
+    _loadAvatarImage();
   }
 
   @override
@@ -47,12 +50,115 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     super.dispose();
   }
 
+  Future<void> _loadProfileData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+
+    if (userId != null) {
+      final response = await http.get(Uri.parse('http://backend-sw02.onrender.com/user/$userId'));
+
+      if (jsonDecode(response.body)['status'] == 'SUCCESS') {
+        final data = jsonDecode(response.body)['data'];
+        setState(() {
+          _username = data['email'] ?? ''; // Ensuring null safety
+          _primaryContact = data['phone'] ?? '';
+          _surnameController.text = data['surname'] ?? '';
+          _otherNamesController.text = data['other_names'] ?? '';
+          _secondaryContactController.text = data['secondary_contact'] ?? '';
+        });
+        // Save to SharedPreferences
+        await prefs.setString('surname', _surnameController.text);
+        await prefs.setString('otherNames', _otherNamesController.text);
+        await prefs.setString('secondaryContact', _secondaryContactController.text);
+      } else {
+        print('Failed to load user data');
+        // Load from SharedPreferences if data fetching fails
+        setState(() {
+          _surnameController.text = prefs.getString('surname') ?? '';
+          _otherNamesController.text = prefs.getString('otherNames') ?? '';
+          _secondaryContactController.text = prefs.getString('secondaryContact') ?? '';
+        });
+      }
+    } else {
+      print('User ID not found in SharedPreferences');
+      // Load from SharedPreferences if no userId
+      setState(() {
+        _surnameController.text = prefs.getString('surname') ?? '';
+        _otherNamesController.text = prefs.getString('otherNames') ?? '';
+        _secondaryContactController.text = prefs.getString('secondaryContact') ?? '';
+      });
+    }
+  }
+
+  Future<void> _loadAvatarImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final imagePath = prefs.getString('avatarImagePath');
+    if (imagePath != null) {
+      setState(() {
+        _avatarImage = File(imagePath);
+      });
+    }
+  }
+
+  Future<void> _saveAvatarImage(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('avatarImagePath', path);
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _avatarImage = File(pickedFile.path);
+      });
+      await _saveAvatarImage(pickedFile.path);
+      _notifyAvatarChange();
+    }
+  }
+
+  void _notifyAvatarChange() {
+    // Notify other parts of the app about the avatar change
+  }
+
+  Future<void> _updateProfileData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+
+    if (userId != null) {
+      final response = await http.post(
+        Uri.parse('http://backend-sw02.onrender.com/user/update_profile'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'userId': userId,
+          'surname': _surnameController.text,
+          'other_names': _otherNamesController.text,
+          'secondary_contact': _secondaryContactController.text,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('Profile updated successfully');
+        // Save to SharedPreferences
+        await prefs.setString('surname', _surnameController.text);
+        await prefs.setString('otherNames', _otherNamesController.text);
+        await prefs.setString('secondaryContact', _secondaryContactController.text);
+      } else {
+        print('Failed to update profile');
+      }
+    } else {
+      print('User ID not found in SharedPreferences');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final primaryColor = const Color.fromARGB(255, 6, 80, 8);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
-        backgroundColor: Color.fromARGB(255, 6, 80, 8), // Dark Red color
+        backgroundColor: primaryColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -67,34 +173,30 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
           children: [
             // Profile Header
             Container(
-              color: Color.fromARGB(255, 6, 80, 8), // Dark Red color
+              color: primaryColor,
               padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
               child: Row(
                 children: [
-                  const CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage("assets/images/placeholder_profile.png"),
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundImage: _avatarImage != null
+                          ? FileImage(_avatarImage!)
+                          : const AssetImage("assets/images/placeholder_profile.png") as ImageProvider,
+                    ),
                   ),
                   const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.surname,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                  Expanded(
+                    child: Text(
+                      '${_surnameController.text} ${_otherNamesController.text}',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                      Text(
-                        widget.otherNames,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
@@ -102,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
 
             // Tab bar section
             Container(
-              color: Color.fromARGB(255, 6, 80, 8), // Dark Red color
+              color: primaryColor,
               child: TabBar(
                 controller: _tabController,
                 labelColor: Colors.white,
@@ -122,32 +224,39 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                 controller: _tabController,
                 children: [
                   // Personal Section
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildProfileItem("Username", widget.username),
-                        _buildProfileItem("Surname", _isEditingPersonal ? null : widget.surname),
-                        _buildProfileItem("Other Names", _isEditingPersonal ? null : widget.otherNames),
-                        if (_isEditingPersonal) ...[
-                          _buildEditableProfileItem("Surname", _surnameController),
-                          _buildEditableProfileItem("Other Names", _otherNamesController),
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildProfileItem("Username", _username),
+                          if (!_isEditingPersonal) ...[
+                            _buildProfileItem("Surname", _surnameController.text),
+                            _buildProfileItem("Other Names", _otherNamesController.text),
+                          ],
+                          if (_isEditingPersonal) ...[
+                            _buildEditableProfileItem("Surname", _surnameController),
+                            _buildEditableProfileItem("Other Names", _otherNamesController),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                   // Contact Section
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildProfileItem("Primary Contact", widget.primaryContact),
-                        _buildProfileItem("Secondary Contact", _isEditingContact ? null : widget.secondaryContact),
-                        if (_isEditingContact)
-                          _buildEditableProfileItem("Secondary Contact", _secondaryContactController),
-                      ],
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildProfileItem("Primary Contact", _primaryContact),
+                          if (!_isEditingContact)
+                            _buildProfileItem("Secondary Contact", _secondaryContactController.text),
+                          if (_isEditingContact)
+                            _buildEditableProfileItem("Secondary Contact", _secondaryContactController),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -160,23 +269,18 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
               child: Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton.icon(
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
                       if (_tabController.index == 0) {
                         if (_isEditingPersonal) {
                           // Save changes to personal info
-                          setState(() {
-                            widget.surname = _surnameController.text;
-                            widget.otherNames = _otherNamesController.text;
-                          });
+                          _updateProfileData();
                         }
                         _isEditingPersonal = !_isEditingPersonal;
                       } else {
                         if (_isEditingContact) {
                           // Save changes to contact info
-                          setState(() {
-                            widget.secondaryContact = _secondaryContactController.text;
-                          });
+                          _updateProfileData();
                         }
                         _isEditingContact = !_isEditingContact;
                       }
@@ -185,7 +289,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                   icon: const Icon(Icons.edit, color: Colors.white),
                   label: Text(_isEditingPersonal || _isEditingContact ? 'Save' : 'Edit'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 6, 80, 8), // Dark Red color
+                    backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
@@ -199,7 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     );
   }
 
-  Widget _buildProfileItem(String title, String? value) {
+  Widget _buildProfileItem(String title, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
@@ -210,19 +314,15 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black54,
             ),
           ),
           const SizedBox(height: 4),
-          if (value != null)
-            Text(
-              value.isNotEmpty ? value : 'N/A',
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.black,
-              ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
             ),
-          const Divider(color: Colors.black26),
+          ),
         ],
       ),
     );
@@ -239,7 +339,6 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black54,
             ),
           ),
           const SizedBox(height: 4),
@@ -249,7 +348,6 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
               border: OutlineInputBorder(),
             ),
           ),
-          const Divider(color: Colors.black26),
         ],
       ),
     );

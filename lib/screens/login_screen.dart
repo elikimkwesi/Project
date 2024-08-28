@@ -4,6 +4,7 @@ import 'home_screen.dart';
 import 'forgot_password_screen.dart';
 import 'signup_screen.dart';
 import '/utils/api_service.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -21,12 +22,19 @@ class LoginScreen extends StatelessWidget {
           children: [
             const Text(
               'Welcome back',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: 10),
             const Text(
               'Sign in to your account',
-              style: TextStyle(fontSize: 16, color: Colors.white),
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -35,7 +43,9 @@ class LoginScreen extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.white,
                 hintText: 'Email / Phone',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -46,7 +56,9 @@ class LoginScreen extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.white,
                 hintText: 'Password',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
               ),
             ),
             Align(
@@ -55,10 +67,15 @@ class LoginScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => ForgotPasswordScreen(),
+                    ),
                   );
                 },
-                child: const Text('Forgot password?', style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Forgot password?',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -66,24 +83,46 @@ class LoginScreen extends StatelessWidget {
               onPressed: () async {
                 String email = emailController.text;
                 String password = passwordController.text;
+
+                // Basic validation
+                if (email.isEmpty || password.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please enter both email and password'),
+                    ),
+                  );
+                  return;
+                }
+
                 showLoadingDialog(context); // Show loading dialog
                 try {
                   var response = await apiService.login(email, password);
                   hideLoadingDialog(context); // Hide loading dialog
+                  print(response);
                   if (response['status'] == 'SUCCESS') {
-                    Navigator.pushReplacement(
+                    // Store the userId in SharedPreferences
+                    // final prefs = await SharedPreferences.getInstance();
+                    // await prefs.setString('userId', response['userId']);
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(response['message'])),
+                      SnackBar(
+                        content: Text(response['message']),
+                      ),
                     );
                   }
                 } catch (e) {
                   hideLoadingDialog(context); // Hide loading dialog on error
+                  print('Login error: $e'); // Log the error
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Login failed: $e')),
+                    SnackBar(
+                      content: Text('Login failed: ${e.toString()}'),
+                    ),
                   );
                 }
               },
@@ -102,7 +141,9 @@ class LoginScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignupScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => SignupScreen(),
+                  ),
                 );
               },
               child: const Text(

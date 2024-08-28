@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   final String baseUrl = 'https://backend-sw02.onrender.com';
@@ -12,17 +13,19 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userId', jsonDecode(response.body)['data']['userId']);
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to login');
     }
   }
 
-  Future<Map<String, dynamic>> signup(String email, String phone, String password) async {
+  Future<Map<String, dynamic>> signup(String email, String phone, String password, String surname, String other_names, String macAddress) async {
     final response = await http.post(
       Uri.parse('$baseUrl/user/signup'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'phone': phone, 'password': password}),
+      body: jsonEncode({'email': email, 'phone': phone, 'password': password, 'surname': surname, 'other_names': other_names, 'macAddress': macAddress}),
     );
 
     if (response.statusCode == 200) {
