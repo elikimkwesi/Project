@@ -1,19 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class SensorDataPage extends StatefulWidget {
-  final List<double> soilMoistureData;
-  final List<double> waterLevelData;
-  final List<double> temperatureData;
-  final List<double> humidityData;
-
-  SensorDataPage({
-    required this.soilMoistureData,
-    required this.waterLevelData,
-    required this.temperatureData,
-    required this.humidityData,
-  });
-
   @override
   _SensorDataPageState createState() => _SensorDataPageState();
 }
@@ -21,6 +11,61 @@ class SensorDataPage extends StatefulWidget {
 class _SensorDataPageState extends State<SensorDataPage> {
   String _selectedFilter = 'Day';
   String? _selectedSensor;
+  List<double> sensorData = [];
+
+  Future<void> fetchSensorData(String period, String sensorType) async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://backend-sw02.onrender.com/api/averages/?period=$period'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        //print(data['data']);
+
+        if (data['status'] == 'SUCCESS') {
+          print('Data received: $data'); // Debugging print statement
+          setState(() {
+            sensorData = _parseSensorData(sensorType, data['data']);
+          });
+        } else {
+          throw Exception('API returned a failure status: ${data['status']}');
+        }
+      } else {
+        throw Exception('Failed to load sensor data with status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e'); // Debugging print statement
+      throw Exception('Failed to load sensor data');
+    }
+  }
+
+  List<double> _parseSensorData(String sensorType, List<dynamic> data) {
+    if (data.isEmpty) return [];
+
+    List<double> parsedData = [];
+    for (var item in data) {
+      switch (sensorType) {
+        case 'Soil Moisture':
+          parsedData.add((item['avgSoilMoisture']?.toDouble() ?? 0.0));
+          break;
+        case 'Water Level':
+          parsedData.add((item['avgwaterLevel']?.toDouble() ?? 0.0));
+          print(item['avgwaterLevel']);
+          break;
+        case 'Temperature':
+          parsedData.add((item['avgTemperature']?.toDouble() ?? 0.0));
+          break;
+        case 'Humidity':
+          parsedData.add((item['avgHumidity']?.toDouble() ?? 0.0));
+          break;
+        default:
+          break;
+      }
+    }
+    print('Parsed data: $parsedData');
+    return parsedData;
+  }
 
   List<double> _filterData(List<double> data) {
     switch (_selectedFilter) {
@@ -41,6 +86,10 @@ class _SensorDataPageState extends State<SensorDataPage> {
           setState(() {
             _selectedSensor = sensorName;
           });
+          fetchSensorData(
+            _selectedFilter.toLowerCase(),
+            sensorName, // Pass the sensorName directly
+          );
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.symmetric(vertical: 30.0),
@@ -111,6 +160,10 @@ class _SensorDataPageState extends State<SensorDataPage> {
                           setState(() {
                             _selectedFilter = value!;
                           });
+                          fetchSensorData(
+                            value?.toLowerCase() ?? '',
+                            _selectedSensor!, // No transformation needed
+                          );
                         },
                       ),
                     ],
@@ -118,12 +171,12 @@ class _SensorDataPageState extends State<SensorDataPage> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(30.0),
                     child: Container(
                       color: Colors.white, // Ensure the graph page has a white background
                       child: LineChart(
                         _buildLineChart(
-                          _filterData(_getSelectedSensorData()),
+                          _filterData(sensorData),
                         ),
                       ),
                     ),
@@ -134,25 +187,23 @@ class _SensorDataPageState extends State<SensorDataPage> {
     );
   }
 
-  List<double> _getSelectedSensorData() {
-    switch (_selectedSensor) {
-      case 'Soil Moisture':
-        return widget.soilMoistureData;
-      case 'Water Level':
-        return widget.waterLevelData;
-      case 'Temperature':
-        return widget.temperatureData;
-      case 'Humidity':
-        return widget.humidityData;
-      default:
-        return [];
-    }
-  }
-
-  LineChartData _buildLineChart(List<double> data) {
+    LineChartData _buildLineChart(List<double> data) {
     return LineChartData(
       gridData: FlGridData(show: true),
-      titlesData: FlTitlesData(show: true),
+      titlesData: FlTitlesData(
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: true, interval: 5),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: true, interval: 5),
+        ),
+        topTitles:AxisTitles(
+          sideTitles: SideTitles(showTitles: false, interval: 1),
+        ),
+        rightTitles:AxisTitles(
+          sideTitles: SideTitles(showTitles: false, interval: 1),
+        )
+      ),
       borderData: FlBorderData(show: true),
       lineBarsData: [
         LineChartBarData(
@@ -161,13 +212,17 @@ class _SensorDataPageState extends State<SensorDataPage> {
               .entries
               .map((entry) => FlSpot(entry.key.toDouble(), entry.value))
               .toList(),
-          isCurved: true,
+          isCurved: true, // This makes the line curve smoother
           color: Colors.blue,
           barWidth: 4,
           isStrokeCapRound: true,
-          dotData: FlDotData(show: false),
+          dotData: FlDotData(show: true), // Show dots on the line to represent each data point
         ),
       ],
+      minX: 0,
+      maxX: data.length.toDouble() - 1, // Adjust X-axis to fit the data length
+      minY: data.reduce((a, b) => a < b ? a : b) - 1, // Min Y value - 1 for padding
+      maxY: data.reduce((a, b) => a > b ? a : b) + 1, // Max Y value + 1 for padding
     );
   }
 }

@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../utils/profile.dart';
 import '../widgets/drawer_widget.dart';
+import 'package:harvestify/screens/notification.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -167,6 +168,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: const Icon(Icons.notifications, color: Colors.black),
                       onPressed: () {
                         // Handle notifications tap
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => NotificationScreen()),
+                        );
                       },
                     ),
                     IconButton(
@@ -370,7 +375,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: _buildFeatureCard(Icons.eco, 'Monitor Farm', Colors.green, () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SensorDataPage(soilMoistureData: [], waterLevelData: [], temperatureData: [], humidityData: [],)),
+                          MaterialPageRoute(builder: (context) => SensorDataPage()),
                         );// Handle Monitor Farm tap
                       }),
                     ),
